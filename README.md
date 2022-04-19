@@ -23,10 +23,10 @@ The blocks are plotted on the x-axis and the neurons on the y-axis.
 
 | <img src="docs/assets/fmnist_mean_activation_pattern.png" width="420" /> | <img src="docs/assets/fmnist_std_activation_pattern.png" width="420" /> |
 |-------------------------------------------------------------------------|-------------------------------------------------------------------------|
-| Mean                                                  | Standard deviation                                                      |
+| Mean activation per class.                                                  | Standard deviation                                                      |
 
 ### MNIST
 
 | <img src="docs/assets/mnist_mean_activation_pattern.png" width="420" /> | <img src="docs/assets/mnist_std_activation_pattern.png" width="420" /> |
 |-------------------------------------------------------------------------|-------------------------------------------------------------------------|
-| Mean                                                  | Standard deviation                                                      |
+| Mean activation per class.                                                  | Standard deviation                                                      |
