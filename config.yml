@@ -3,13 +3,13 @@
 ###########################
 
 # Experiments
-task: "69"
+task: "cnn"
 
 # Data
 dataset: "cifar10"  # cifar10, fmnist, mnist
 
 # Training
-n_epochs: 2000
+n_epochs: 200
 learning_rate: 3.0e-4
 weight_decay: 0.0
 
@@ -18,11 +18,16 @@ step_size: 100
 gamma: 0.5
 
 # Model
-n_blocks: 512
+model_type: "cnn"   # mlp, cnn
+n_dense_blocks: 32
+n_conv_blocks: 32
 n_dims_hidden: 128
+# CNN
+n_channels_hidden: 8
+n_channels_out: 8
 
 # Dataloader
-batch_size: 4096
+batch_size: 128
 num_workers: 4
 
 # Summary

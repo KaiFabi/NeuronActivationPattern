@@ -6,7 +6,7 @@ import torch
 
 from torch.utils.data import DataLoader
 
-from .models import Block
+from .models import DenseBlock, ConvBlock
 
 
 def visualize(model: torch.nn.Module, dataloader: tuple, config: dict) -> None:
@@ -22,7 +22,12 @@ def visualize(model: torch.nn.Module, dataloader: tuple, config: dict) -> None:
     model = load_checkpoint(model=model, config=config)
 
     # Register forward hooks
-    register_forward_hooks(model=model, module=Block)
+    if config["model_type"] == "mlp":
+        register_forward_hooks(model=model, module=DenseBlock)
+    elif config["model_type"] == "cnn":
+        register_forward_hooks(model=model, module=ConvBlock)
+    else:
+        raise NotImplementedError
 
     # Get dataloader
     _, testloader = dataloader
@@ -59,9 +64,13 @@ def load_checkpoint(model: torch.nn.Module, config: dict):
 def register_forward_hooks(model: torch.nn.Module, module) -> None:
     """Registers forward hooks in model.
 
+    Module can be any module operations such as DenseBlock, ConvBlock,
+    nn.BatchNorm1d, nn.Linear, nn.ReLU. Modules should have same output
+    dimensions.
+
     Args:
-        model: Neural network.
-        module: Module of neural network (Block, nn.BatchNorm1d, nn.Linear, nn.ReLU, ...)
+        model: PyTorch model.
+        module: Module of neural network.
 
     """
     for name, layer in model.named_modules():
@@ -94,7 +103,7 @@ def get_class_activations(model: torch.nn.Module, dataloader: DataLoader, config
         preds = torch.argmax(logits, dim=-1)
 
         # Convert activations to a single tensor
-        activation_pattern = [activation for activation in model.activations.values()]
+        activation_pattern = [activation.flatten(1) for activation in model.activations.values()]
         activation_pattern = torch.stack(activation_pattern, dim=-1).detach().cpu()
 
         # Assign activation pattern to each class.
@@ -102,6 +111,9 @@ def get_class_activations(model: torch.nn.Module, dataloader: DataLoader, config
             if preds[j] == labels[j]:
                 idx = y_data[j].item()
                 class_activations[idx_to_class[idx]].append(pattern)
+
+        if i == 4:
+            break
 
     for key in class_activations:
         class_activations[key] = torch.stack(class_activations[key], dim=-1)
@@ -118,6 +130,7 @@ def plot_class_activations(class_activations: dict, config: dir) -> None:
 
     """
     n_classes = len(class_activations)
+    task = config["task"]
     plt_cfg = {"nrows": n_classes, "ncols": 1, "figsize": (8, 8)}
     img_cfg = {"extent": (0, 4000, 0, 400), "interpolation": "nearest", "cmap": "rainbow"}
     save_cfg = {"dpi": 240, "bbox_inches": "tight", "transparent": True, "format": "png"}
@@ -130,7 +143,7 @@ def plot_class_activations(class_activations: dict, config: dir) -> None:
         ax.set_yticks([])
         ax.set_ylabel(name.capitalize(), fontsize=6)
     fig.colorbar(im, ax=axes.ravel().tolist())
-    results_path = os.path.join(config["results_dir"], "mean_activation_pattern.png")
+    results_path = os.path.join(config["results_dir"], f"mean_activation_pattern_{task}.png")
     plt.savefig(results_path, **save_cfg)
     plt.close(fig)
 
@@ -142,6 +155,6 @@ def plot_class_activations(class_activations: dict, config: dir) -> None:
         ax.set_yticks([])
         ax.set_ylabel(name.capitalize(), fontsize=6)
     fig.colorbar(im, ax=axes.ravel().tolist())
-    results_path = os.path.join(config["results_dir"], "std_activation_pattern.png")
+    results_path = os.path.join(config["results_dir"], f"std_activation_pattern_{task}.png")
     plt.savefig(results_path, **save_cfg)
     plt.close(fig)

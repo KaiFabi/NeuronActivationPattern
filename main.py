@@ -9,7 +9,7 @@ from pathlib import Path
 
 from src.config import load_config
 from src.data import get_dataloader
-from src.models import DenseResNet
+from src.models import DenseNet, ConvNet
 from src.train import train
 from src.visualize import visualize
 
@@ -48,9 +48,17 @@ def main():
 
     dataloader = get_dataloader(config)
     config["n_classes"] = len(dataloader[0].dataset.classes)
-    config["input_shape"] = dataloader[0].dataset.data.shape[1:]
+    input_shape = list(dataloader[0].dataset.data.shape[1:])
+    input_shape = input_shape if len(input_shape) == 3 else input_shape + [1, ]
+    config["input_shape"] = input_shape
 
-    model = DenseResNet(config=config)
+    if config["model_type"] == "mlp":
+        model = DenseNet(config=config)
+    elif config["model_type"] == "cnn":
+        model = ConvNet(config=config)
+    else:
+        raise NotImplementedError
+
     model.to(config["device"])
 
     if kwargs.mode == "train":
