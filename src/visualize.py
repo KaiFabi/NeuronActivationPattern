@@ -112,9 +112,6 @@ def get_class_activations(model: torch.nn.Module, dataloader: DataLoader, config
                 idx = y_data[j].item()
                 class_activations[idx_to_class[idx]].append(pattern)
 
-        if i == 4:
-            break
-
     for key in class_activations:
         class_activations[key] = torch.stack(class_activations[key], dim=-1)
 
@@ -129,8 +126,10 @@ def plot_class_activations(class_activations: dict, config: dir) -> None:
         config: Dictionary holding configuration.
 
     """
-    n_classes = len(class_activations)
-    task = config["task"]
+    n_classes = config["n_classes"]
+    dataset = config["dataset"]
+    model = config["model_type"]
+
     plt_cfg = {"nrows": n_classes, "ncols": 1, "figsize": (8, 8)}
     img_cfg = {"extent": (0, 4000, 0, 400), "interpolation": "nearest", "cmap": "rainbow"}
     save_cfg = {"dpi": 240, "bbox_inches": "tight", "transparent": True, "format": "png"}
@@ -143,7 +142,8 @@ def plot_class_activations(class_activations: dict, config: dir) -> None:
         ax.set_yticks([])
         ax.set_ylabel(name.capitalize(), fontsize=6)
     fig.colorbar(im, ax=axes.ravel().tolist())
-    results_path = os.path.join(config["results_dir"], f"mean_activation_pattern_{task}.png")
+    file_name = f"{dataset}_{model}_mean_activation_pattern.png"
+    results_path = os.path.join(config["results_dir"], file_name)
     plt.savefig(results_path, **save_cfg)
     plt.close(fig)
 
@@ -155,6 +155,7 @@ def plot_class_activations(class_activations: dict, config: dir) -> None:
         ax.set_yticks([])
         ax.set_ylabel(name.capitalize(), fontsize=6)
     fig.colorbar(im, ax=axes.ravel().tolist())
-    results_path = os.path.join(config["results_dir"], f"std_activation_pattern_{task}.png")
+    file_name = f"{dataset}_{model}_std_activation_pattern.png"
+    results_path = os.path.join(config["results_dir"], file_name)
     plt.savefig(results_path, **save_cfg)
     plt.close(fig)

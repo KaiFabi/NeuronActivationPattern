@@ -6,23 +6,23 @@
 task: "cnn"
 
 # Data
-dataset: "cifar10"  # cifar10, fmnist, mnist
+dataset: "fmnist"  # cifar10, fmnist, mnist
 
 # Training
 n_epochs: 200
-learning_rate: 3.0e-4
+learning_rate: 1.0e-3
 weight_decay: 0.0
 
 # Learning rate
 step_size: 100
-gamma: 0.5
+gamma: 0.1
 
 # Model
 model_type: "cnn"   # mlp, cnn
 n_dense_blocks: 32
-n_conv_blocks: 32
 n_dims_hidden: 128
 # CNN
+n_conv_blocks: 128
 n_channels_hidden: 8
 n_channels_out: 8
 
