@@ -49,8 +49,6 @@ def run_training(model: torch.nn.Module,
     save_train_stats_every_n_epochs = config["save_train_stats_every_n_epochs"]
     save_test_stats_every_n_epochs = config["save_test_stats_every_n_epochs"]
     save_model_every_n_epochs = config["save_model_every_n_epochs"]
-    step_size = config["step_size"]
-    gamma = config["gamma"]
 
     trainloader, testloader = dataloader
 
@@ -59,7 +57,6 @@ def run_training(model: torch.nn.Module,
     optimizer = optim.Adam(model.parameters(), lr=learning_rate, weight_decay=weight_decay)
 
     criterion = nn.CrossEntropyLoss()
-    scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=step_size, gamma=gamma)
 
     for epoch in range(n_epochs):
 
@@ -87,7 +84,6 @@ def run_training(model: torch.nn.Module,
             running_accuracy += (torch.argmax(outputs, dim=1) == labels).float().sum()
             running_counter += labels.size(0)
 
-        scheduler.step()
         running_loss = running_loss / running_counter
         running_accuracy = running_accuracy / running_counter
 

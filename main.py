@@ -15,12 +15,25 @@ from src.visualize import visualize
 
 
 def get_kwargs():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--mode", default="train", choices=("train", "visualize"))
-    parser.add_argument("--results_dir", default="results")
-    parser.add_argument("--weights_dir", default="weights")
-    parser.add_argument("--data_dir", default="data")
-    parser.add_argument("--runs_dir", default="runs")
+    parser = argparse.ArgumentParser(description="Neuron activation pattern visualization.")
+    parser.add_argument(
+        "-m", "--mode", required=True, type=str, default="train", choices=("train", "visualize"),
+    )
+    parser.add_argument(
+        "--model", required=True, type=str, default="mlp", choices=("cnn", "mlp"),
+    )
+    parser.add_argument(
+        "--results_dir", default="results"
+    )
+    parser.add_argument(
+        "--weights_dir", default="weights"
+    )
+    parser.add_argument(
+        "--data_dir", default="data"
+    )
+    parser.add_argument(
+        "--runs_dir", default="runs"
+    )
     kwargs = parser.parse_args()
     return kwargs
 
@@ -30,12 +43,13 @@ def main():
     kwargs = get_kwargs()
 
     # Create folder structure
-    Path(f"{kwargs.results_dir}").mkdir(parents=True, exist_ok=True)
-    Path(f"{kwargs.weights_dir}").mkdir(parents=True, exist_ok=True)
-    Path(f"{kwargs.data_dir}").mkdir(parents=True, exist_ok=True)
-    Path(f"{kwargs.runs_dir}").mkdir(parents=True, exist_ok=True)
+    Path(kwargs.results_dir).mkdir(parents=True, exist_ok=True)
+    Path(kwargs.weights_dir).mkdir(parents=True, exist_ok=True)
+    Path(kwargs.data_dir).mkdir(parents=True, exist_ok=True)
+    Path(kwargs.runs_dir).mkdir(parents=True, exist_ok=True)
 
     config = load_config(file_path="config.yml")
+    config["model"] = kwargs.model
     config["results_dir"] = kwargs.results_dir
     config["weights_dir"] = kwargs.weights_dir
     config["data_dir"] = kwargs.data_dir
@@ -47,14 +61,10 @@ def main():
     print(f"Using {device}")
 
     dataloader = get_dataloader(config)
-    config["n_classes"] = len(dataloader[0].dataset.classes)
-    input_shape = list(dataloader[0].dataset.data.shape[1:])
-    input_shape = input_shape if len(input_shape) == 3 else input_shape + [1, ]
-    config["input_shape"] = input_shape
 
-    if config["model_type"] == "mlp":
+    if kwargs.model == "mlp":
         model = DenseNet(config=config)
-    elif config["model_type"] == "cnn":
+    elif kwargs.model == "cnn":
         model = ConvNet(config=config)
     else:
         raise NotImplementedError

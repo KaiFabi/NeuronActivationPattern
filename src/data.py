@@ -98,8 +98,8 @@ def get_dataloader(config: dict) -> tuple[DataLoader, DataLoader]:
 
         transform_train = transforms.Compose(
             [
-                # transforms.RandomRotation(degrees=45),
-                # transforms.RandomCrop(28, padding=4),
+                transforms.RandomRotation(degrees=45),
+                transforms.RandomCrop(28, padding=4),
                 transforms.ToTensor(),
                 transforms.Normalize(avg, std)
             ]
@@ -134,5 +134,10 @@ def get_dataloader(config: dict) -> tuple[DataLoader, DataLoader]:
 
     else:
         raise NotImplementedError(f"No dataloader for dataset {dataset} implemented.")
+
+    config["n_classes"] = len(trainloader.dataset.classes)
+    input_shape = list(trainloader.dataset.data.shape[1:])
+    input_shape = input_shape if len(input_shape) == 3 else input_shape + [1, ]
+    config["input_shape"] = input_shape
 
     return trainloader, testloader

@@ -2,35 +2,31 @@
 # NEURON ACTIVATION PATTERN
 ###########################
 
-# Experiments
-task: "cnn"
+# -------- Data
+# cifar10, fmnist, mnist
+dataset: "fmnist"
 
-# Data
-dataset: "fmnist"  # cifar10, fmnist, mnist
-
-# Training
+# -------- Training
 n_epochs: 200
+batch_size: 128
 learning_rate: 1.0e-3
 weight_decay: 0.0
 
-# Learning rate
-step_size: 100
-gamma: 0.1
-
-# Model
-model_type: "cnn"   # mlp, cnn
-n_dense_blocks: 32
+# -------- Model
+# cnn, mlp
+model: "cnn"
+# MLP
+n_dense_blocks: 64
 n_dims_hidden: 128
 # CNN
-n_conv_blocks: 128
+n_conv_blocks: 64
 n_channels_hidden: 8
 n_channels_out: 8
 
-# Dataloader
-batch_size: 128
+# -------- Dataloader
 num_workers: 4
 
-# Summary
+# -------- Summary
 save_model_every_n_epochs: 10
 save_train_stats_every_n_epochs: 1
 save_test_stats_every_n_epochs: 10
