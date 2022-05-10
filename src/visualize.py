@@ -1,7 +1,7 @@
 """Script visualizes neuron activation pattern of dense ResNet.
 """
-import os
 import matplotlib.pyplot as plt
+import os
 import torch
 
 from torch.utils.data import DataLoader
@@ -22,9 +22,9 @@ def visualize(model: torch.nn.Module, dataloader: tuple, config: dict) -> None:
     model = load_checkpoint(model=model, config=config)
 
     # Register forward hooks
-    if config["model_type"] == "mlp":
+    if config["model"] == "mlp":
         register_forward_hooks(model=model, module=DenseBlock)
-    elif config["model_type"] == "cnn":
+    elif config["model"] == "cnn":
         register_forward_hooks(model=model, module=ConvBlock)
     else:
         raise NotImplementedError
@@ -52,10 +52,10 @@ def load_checkpoint(model: torch.nn.Module, config: dict):
     """
     weights_dir = config["weights_dir"]
     dataset = config["dataset"]
-    task = config["task"]
+    model_name = config["model"]
     device = config["device"]
 
-    model.load_state_dict(torch.load(os.path.join(weights_dir, f"{dataset}_{task}.pth")))
+    model.load_state_dict(torch.load(os.path.join(weights_dir, f"{dataset}_{model_name}.pth")))
     model.to(device)
 
     return model
@@ -128,7 +128,7 @@ def plot_class_activations(class_activations: dict, config: dir) -> None:
     """
     n_classes = config["n_classes"]
     dataset = config["dataset"]
-    model = config["model_type"]
+    model_name = config["model"]
 
     plt_cfg = {"nrows": n_classes, "ncols": 1, "figsize": (8, 8)}
     img_cfg = {"extent": (0, 4000, 0, 400), "interpolation": "nearest", "cmap": "rainbow"}
@@ -142,7 +142,7 @@ def plot_class_activations(class_activations: dict, config: dir) -> None:
         ax.set_yticks([])
         ax.set_ylabel(name.capitalize(), fontsize=6)
     fig.colorbar(im, ax=axes.ravel().tolist())
-    file_name = f"{dataset}_{model}_mean_activation_pattern.png"
+    file_name = f"{dataset}_{model_name}_mean_activation_pattern.png"
     results_path = os.path.join(config["results_dir"], file_name)
     plt.savefig(results_path, **save_cfg)
     plt.close(fig)
@@ -155,7 +155,8 @@ def plot_class_activations(class_activations: dict, config: dir) -> None:
         ax.set_yticks([])
         ax.set_ylabel(name.capitalize(), fontsize=6)
     fig.colorbar(im, ax=axes.ravel().tolist())
-    file_name = f"{dataset}_{model}_std_activation_pattern.png"
+    file_name = f"{dataset}_{model_name}_std_activation_pattern.png"
     results_path = os.path.join(config["results_dir"], file_name)
     plt.savefig(results_path, **save_cfg)
     plt.close(fig)
+

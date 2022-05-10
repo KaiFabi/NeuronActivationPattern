@@ -1,15 +1,15 @@
 # Neuron Activation Pattern
+---------------------------------------------------------------------------------------------------
 
-Visualization of the neuron activation pattern for each class in a dataset. A ResNet-like fully 
-connected neural network is used to create deep architectures. The output activations of each 
-residual block are used for the visualization. Only correctly classified images are used to create
-the activation patterns.
+Visualization of the neuron activation pattern for each class in a dataset. Networks use residual 
+connections to allow for deep architectures. The output activations of each residual block are used 
+for the visualization. Only correctly classified images are used to create the activation patterns.
 
 ## Results
 
-This section presents a few results for multilayer perceptrons (MLP) and convolutional neural 
+This section shows results for a multilayer perceptrons (MLP) and convolutional neural 
 networks (CNN). At the core, both network architecture were chosen to be isotropic to simplify 
-visualization the activation patterns.
+the visualization of the activation patterns.
 
 The fully connected neural networks consisted of 512 residual blocks with a width of 64 neurons. The
 convolutional neural network consisted of 128 residual blocks with feature maps of size 8 x 16 x 16

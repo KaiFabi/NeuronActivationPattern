@@ -3,9 +3,11 @@
 import datetime
 import os
 
+from tqdm import tqdm
+
 import torch
-from torch import nn
 import torch.optim as optim
+from torch import nn
 
 from torch.utils.tensorboard import SummaryWriter
 from torch.utils.data import DataLoader
@@ -42,7 +44,7 @@ def run_training(model: torch.nn.Module,
         config: Dictionary holding configuration for training.
 
     """
-    task = config["task"]
+    model_name = config["model"]
     device = config["device"]
     dataset = config["dataset"]
     n_epochs = config["n_epochs"]
@@ -58,7 +60,7 @@ def run_training(model: torch.nn.Module,
 
     criterion = nn.CrossEntropyLoss()
 
-    for epoch in range(n_epochs):
+    for epoch in tqdm(range(n_epochs)):
 
         running_loss = 0.0
         running_accuracy = 0.0
@@ -99,7 +101,7 @@ def run_training(model: torch.nn.Module,
             writer.add_scalar("test_accuracy", test_accuracy, epoch)
 
         if epoch % save_model_every_n_epochs == 0:
-            weights_path = os.path.join(config["weights_dir"], f"{dataset}_{task}.pth")
+            weights_path = os.path.join(config["weights_dir"], f"{dataset}_{model_name}.pth")
             torch.save(model.state_dict(), weights_path)
 
         print(f"{epoch:04d} {running_loss:.5f} {running_accuracy:.4f}")

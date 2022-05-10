@@ -17,10 +17,10 @@ from src.visualize import visualize
 def get_kwargs():
     parser = argparse.ArgumentParser(description="Neuron activation pattern visualization.")
     parser.add_argument(
-        "-m", "--mode", required=True, type=str, default="train", choices=("train", "visualize"),
+        "--mode", default="train", choices=("train", "visualize"),
     )
     parser.add_argument(
-        "--model", required=True, type=str, default="mlp", choices=("cnn", "mlp"),
+        "--model", default="mlp", choices=("cnn", "mlp"),
     )
     parser.add_argument(
         "--results_dir", default="results"
