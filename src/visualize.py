@@ -52,10 +52,10 @@ def load_checkpoint(model: torch.nn.Module, config: dict):
     """
     weights_dir = config["weights_dir"]
     dataset = config["dataset"]
-    model_name = config["model"]
+    network = config["model"]
     device = config["device"]
 
-    model.load_state_dict(torch.load(os.path.join(weights_dir, f"{dataset}_{model_name}.pth")))
+    model.load_state_dict(torch.load(os.path.join(weights_dir, f"{dataset}_{network}.pth")))
     model.to(device)
 
     return model
@@ -128,7 +128,7 @@ def plot_class_activations(class_activations: dict, config: dir) -> None:
     """
     n_classes = config["n_classes"]
     dataset = config["dataset"]
-    model_name = config["model"]
+    network = config["network"]
 
     plt_cfg = {"nrows": n_classes, "ncols": 1, "figsize": (8, 8)}
     img_cfg = {"extent": (0, 4000, 0, 400), "interpolation": "nearest", "cmap": "rainbow"}
@@ -142,7 +142,7 @@ def plot_class_activations(class_activations: dict, config: dir) -> None:
         ax.set_yticks([])
         ax.set_ylabel(name.capitalize(), fontsize=6)
     fig.colorbar(im, ax=axes.ravel().tolist())
-    file_name = f"{dataset}_{model_name}_mean_activation_pattern.png"
+    file_name = f"{dataset}_{network}_mean_activation_pattern.png"
     results_path = os.path.join(config["results_dir"], file_name)
     plt.savefig(results_path, **save_cfg)
     plt.close(fig)
@@ -155,7 +155,7 @@ def plot_class_activations(class_activations: dict, config: dir) -> None:
         ax.set_yticks([])
         ax.set_ylabel(name.capitalize(), fontsize=6)
     fig.colorbar(im, ax=axes.ravel().tolist())
-    file_name = f"{dataset}_{model_name}_std_activation_pattern.png"
+    file_name = f"{dataset}_{network}_std_activation_pattern.png"
     results_path = os.path.join(config["results_dir"], file_name)
     plt.savefig(results_path, **save_cfg)
     plt.close(fig)

@@ -15,9 +15,9 @@ learning_rate: 1.0e-3
 weight_decay: 0.0
 
 
-# -------- Model
+# -------- Network
 # cnn, mlp
-model: "cnn"
+network: "cnn"
 
 # MLP
 n_dense_blocks: 32

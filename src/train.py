@@ -44,7 +44,7 @@ def run_training(model: torch.nn.Module,
         config: Dictionary holding configuration for training.
 
     """
-    model_name = config["model"]
+    network = config["network"]
     device = config["device"]
     dataset = config["dataset"]
     n_epochs = config["n_epochs"]
@@ -101,7 +101,7 @@ def run_training(model: torch.nn.Module,
             writer.add_scalar("test_accuracy", test_accuracy, epoch)
 
         if epoch % save_model_every_n_epochs == 0:
-            weights_path = os.path.join(config["weights_dir"], f"{dataset}_{model_name}.pth")
+            weights_path = os.path.join(config["weights_dir"], f"{dataset}_{network}.pth")
             torch.save(model.state_dict(), weights_path)
 
         print(f"{epoch:04d} {running_loss:.5f} {running_accuracy:.4f}")
